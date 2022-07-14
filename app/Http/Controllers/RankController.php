@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 
 class RankController extends Controller
@@ -23,7 +24,7 @@ class RankController extends Controller
      */
     public function create()
     {
-        //
+        return view('contents.data_master.ranks.create');
     }
 
     /**
@@ -34,7 +35,34 @@ class RankController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required',
+            'number' => 'required'
+        ]);
+
+        $data = [
+            'rank_name' => $request->input('name'),
+            'minimum_rank' => $request->input('number')
+        ];
+
+        $api = env('LINK_API');
+        $url = $api.'/ranks';
+
+        $client = new Client([
+            'headers' => [ 'Content-Type' => 'application/json' ]
+        ]);
+        $res = $client->request('POST',$url,['body' => json_encode($data)]);
+
+        if($res->getStatusCode() == 200){
+            $response_data = $res->getBody()->getContents();
+        }else{
+            $response_data = $res->getBody()->getContents();
+        }
+        $respon_json = json_decode($response_data);
+
+        return view('contents.data_master.ranks.index',[
+            'data' => $respon_json
+        ]);
     }
 
     /**
@@ -56,7 +84,16 @@ class RankController extends Controller
      */
     public function edit($id)
     {
-        //
+        $api = env('LINK_API');
+        $client = new Client();
+
+        $res= $client->get($api.'/ranks/'.$id);
+        $response_data = $res->getBody()->getContents();
+        $respon_json = json_decode($response_data);
+
+        return view('contents.data_master.ranks.edit',[
+            'data' => $respon_json->data
+        ]);
     }
 
     /**
@@ -68,7 +105,34 @@ class RankController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $api = env('LINK_API');
+        $url=$api.'/ranks/'.$id;
+
+        $request->validate([
+            'name' => 'required',
+            'number' => 'required'
+        ]);
+
+        $data = [
+            'rank_name' => $request->input('name'),
+            'minimum_rank' => $request->input('number')
+        ];
+
+        $client = new Client([
+            'headers' => [ 'Content-Type' => 'application/json' ]
+        ]);
+        $res = $client->request('PATCH',$url,['body' => json_encode($data)]);
+
+        if($res->getStatusCode() == 200){
+            $response_data = $res->getBody()->getContents();
+        }else{
+            $response_data = $res->getBody()->getContents();
+        }
+        $respon_json = json_decode($response_data);
+
+        return view('contents.data_master.ranks.index',[
+            'data' => $respon_json
+        ]);
     }
 
     /**

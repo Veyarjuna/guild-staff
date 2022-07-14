@@ -14,7 +14,7 @@
                 <nav aria-label="breadcrumb" class="breadcrumb-header float-start float-lg-end">
                     <ol class="breadcrumb">
                         <li class="breadcrumb-item"><a href="/">Dashboard</a></li>
-                        <li class="breadcrumb-item"><a href="/users">Users</a></li>
+                        <li class="breadcrumb-item"><a href="/ranks">Ranks</a></li>
                         <li class="breadcrumb-item active" aria-current="page">Create</li>
                     </ol>
                 </nav>
@@ -40,67 +40,40 @@
                                 </ul>
                             </div>
                             @endif
-                            <form class="form form-horizontal" method="POST" action="/users" enctype="multipart/form-data">
+                            <form class="form form-horizontal" method="POST" action="/ranks/{{$data->rank_id}}" enctype="multipart/form-data">
                                 @csrf
+                                @method('PUT')
                                 <div class="form-body">
                                     <div class="row">
                                         <div class="col-md-2">
-                                            <label>Name</label>
+                                            <label>Rank Name</label>
                                         </div>
                                         <div class="col-md-10">
                                             <div class="form-group has-icon-left">
                                                 <div class="position-relative">
                                                     <input type="text" class="form-control" placeholder="Name"
-                                                        id="name" name="name" value="{{old('name')}}">
+                                                        id="name" name="name" value="{{$data->rank_name}}">
                                                     <div class="form-control-icon">
-                                                        <i class="bi bi-person"></i>
+                                                        <i class="bi bi-box-seam"></i>
                                                     </div>
                                                 </div>
                                             </div>
                                         </div>
                                         <div class="col-md-2">
-                                            <label>Email</label>
+                                            <label>Minimum Rank</label>
                                         </div>
                                         <div class="col-md-10">
                                             <div class="form-group has-icon-left">
                                                 <div class="position-relative">
-                                                    <input type="email" class="form-control" placeholder="Email"
-                                                        id="email" name="email" value="{{old('email')}}">
+                                                    <input type="number" class="form-control" id="number" placeholder="Minimum Rank Point" name="number" value="{{$data->minimum_rank}}">
                                                     <div class="form-control-icon">
-                                                        <i class="bi bi-envelope"></i>
+                                                        <i class="bi bi-bookmark-check"></i>
                                                     </div>
                                                 </div>
                                             </div>
-                                        </div>
-                                        <div class="col-md-2">
-                                            <label>Password</label>
-                                        </div>
-                                        <div class="col-md-10">
-                                            <div class="form-group has-icon-left">
-                                                <div class="position-relative">
-                                                    <input type="password" class="form-control" id="password" placeholder="Password" name="password">
-                                                    <div class="form-control-icon">
-                                                        <i class="bi bi-lock"></i>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </div>
-                                        <div class="col-md-2">
-                                            <label>Gender</label>
-                                        </div>
-                                        <div class="col-md-10">
-                                            <input type="radio" class="btn-check" name="gender" id="male-checked"
-                                                autocomplete="off" value="Male">
-                                            <label class="btn btn-outline-success" for="male-checked">Male</label>
-                    
-                                            <input type="radio" class="btn-check" name="gender" id="female-checked"
-                                                autocomplete="off" value="Female">
-                                            <label class="btn btn-outline-danger" for="female-checked">Female</label>
                                         </div>
                                         <div class="col-12 d-flex justify-content-end">
-                                            <button type="submit" class="btn btn-primary me-1 mb-1" id="submit">Submit</button>
-                                            <button type="reset"
-                                                class="btn btn-light-secondary me-1 mb-1">Reset</button>
+                                            <button type="submit" class="btn btn-success me-1 mb-1" id="submit">Update</button>
                                         </div>
                                     </div>
                                 </div>
@@ -113,9 +86,4 @@
     </section>
     <!-- // Basic Horizontal form layout section end -->
 </div>
-<script>
-    setTimeout(() => {
-        $('#error').slideUp('fast');
-    }, 3000);
-    </script>
 @endsection

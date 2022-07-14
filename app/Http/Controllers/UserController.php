@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use GuzzleHttp\Client;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Http;
 
 class UserController extends Controller
@@ -51,9 +53,22 @@ class UserController extends Controller
 
         $api = env('LINK_API');
         $url = $api.'/users';
-        $response = Http::post($url, $data);
-        dd($response);
-        // return view('contents.data_master.users.index');
+
+        $client = new Client([
+            'headers' => [ 'Content-Type' => 'application/json' ]
+        ]);
+        $res = $client->request('POST',$url,['body' => json_encode($data)]);
+
+        if($res->getStatusCode() == 200){
+            $response_data = $res->getBody()->getContents();
+        }else{
+            $response_data = $res->getBody()->getContents();
+        }
+        $respon_json = json_decode($response_data);
+
+        return view('contents.data_master.users.index', [
+            'data' => $respon_json
+        ]);
     }
 
     /**
@@ -73,9 +88,19 @@ class UserController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
+
     public function edit($id)
     {
-        //
+        $api = env('LINK_API');
+        $client = new Client();
+
+        $res= $client->get($api.'/users/'.$id);
+        $response_data = $res->getBody()->getContents();
+        $respon_json = json_decode($response_data);
+        
+        return view('contents.data_master.users.edit',[
+            'data' => $respon_json->data
+        ]);
     }
 
     /**
@@ -87,7 +112,38 @@ class UserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        //
+        $api = env('LINK_API');
+        $url=$api.'/users/'.$id;
+        $request->validate([
+            'name' => 'required|max:255',
+            'email' => 'required|email',
+            'gender' => 'required'
+        ]);
+
+        $data = [
+            'user_name' => $request->input('name'),
+            'email' => $request->input('email'),
+            'password' => $request->input('password'),
+            'img_profil' => "localhost:5000/src/img/profil.png",
+            'gender' => $request->input('gender')
+        ];
+
+        $client = new Client([
+            'headers' => [ 'Content-Type' => 'application/json' ]
+        ]);
+        $res = $client->request('PATCH',$url,['body' => json_encode($data)]);
+        if($res->getStatusCode() == 200){
+            $response_data = $res->getBody()->getContents();
+        }else{
+            $response_data = $res->getBody()->getContents();
+        }
+        $respon_json = json_decode($response_data);
+
+        return view('contents.data_master.users.index', [
+            'data' => $respon_json
+        ]);
+
+        
     }
 
     /**

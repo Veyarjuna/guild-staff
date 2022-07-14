@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 
 class MenuController extends Controller
@@ -23,7 +24,7 @@ class MenuController extends Controller
      */
     public function create()
     {
-        //
+        return view('contents.data_master.menus.create');
     }
 
     /**
@@ -34,7 +35,43 @@ class MenuController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required|max:255',
+            'menu_number' => 'required',
+            'menu_parent' => 'required',
+            'menusub' => 'required',
+            'role_menu' => 'required',
+            'menu_icon' => 'required',
+        ]);
+
+        $data = [
+            'name_menu' => $request->input('name'),
+            'menu' => $request->input('menu_number'),
+            'menu_parent' => $request->input('menu_parent'),
+            'menu_has_sub' => $request->input('menusub'),
+            'menu_role_access' => $request->input('role_menu'),
+            'menu_icon' => $request->input('menu_icon'),
+            'menu_endpoint' => $request->input('menu_endpoint')
+        ];
+
+        $api = env('LINK_API');
+        $url = $api.'/menus';
+
+        $client = new Client([
+            'headers' => [ 'Content-Type' => 'application/json' ]
+        ]);
+        $res = $client->request('POST',$url,['body' => json_encode($data)]);
+
+        if($res->getStatusCode() == 200){
+            $response_data = $res->getBody()->getContents();
+        }else{
+            $response_data = $res->getBody()->getContents();
+        }
+        $respon_json = json_decode($response_data);
+
+        return view('contents.data_master.menus.index', [
+            'data' => $respon_json
+        ]);
     }
 
     /**

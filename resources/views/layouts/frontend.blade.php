@@ -23,7 +23,8 @@
 </head>
 
 <body>
-    <input type="text" value="{{env('LINK_API')}}" id="api_link" hidden>
+    <input type="text" value="{{env('LINK_API')}}" id="api_link" hidden> 
+    <input type="text" value="{{url()->current()}}" id="url_link" hidden> 
     <div id="app">
         @include('components.sidebar')
 

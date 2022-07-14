@@ -19,6 +19,13 @@
             </div>
         </div>
     </div>
+    @if (isset($data))
+        @if ($data->status == 200)
+            <div class="alert alert-success" id="alert_badge">{{$data->msg}}.</div>        
+        @else
+            <div class="alert alert-danger" id="alert_badge">{{$data->msg}}.</div>        
+        @endif
+    @endif
     <section class="section">
         <div class="card">
             <div class="card-header">
@@ -33,6 +40,7 @@
                             <th>No</th>
                             <th>Profil</th>
                             <th>Name</th>
+                            <th>Email</th>
                             <th>Gender</th>
                             <th>Join At</th>
                             <th>Action</th>
